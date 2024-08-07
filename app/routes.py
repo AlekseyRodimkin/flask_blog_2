@@ -1,12 +1,16 @@
 from datetime import datetime
 from urllib.parse import urlsplit
-from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 import sqlalchemy as sa
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, \
     EmptyForm, PostForm
 from app.models import User, Post
+from flask import render_template
+import os
+from flask import Flask, flash, request, redirect, url_for
+from werkzeug.utils import secure_filename
+from flask import send_from_directory
 
 
 @app.before_request
@@ -17,18 +21,41 @@ def before_request():
         db.session.commit()
 
 
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4'}
+
+
+def allowed_file(filename):
+    """File extension check function"""
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    """The function of the main page"""
+    def gen_url(file):
+        if allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            path = url_for('uploads', name=filename)
+            return path
+        else:
+            flash(f'Пока разрешены файлы только: {ALLOWED_EXTENSIONS}')
+
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
+        file = form.file.data
+        video = form.video.data
+        f_u = gen_url(file)
+        v_u = gen_url(video)
+        post = Post(head=form.title.data, body=form.post.data, price=form.price.data, places=form.places.data,
+                    photo_url=f_u, video_url=v_u, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash('Опубликовано')
         return redirect(url_for('index'))
+
     page = request.args.get('page', 1, type=int)
     posts = db.paginate(current_user.following_posts(), page=page,
                         per_page=app.config['POSTS_PER_PAGE'], error_out=False)
@@ -38,7 +65,13 @@ def index():
         if posts.has_prev else None
     return render_template('index.html', title='Home', form=form,
                            posts=posts.items, next_url=next_url,
-                           prev_url=prev_url)
+                           prev_url=prev_url,
+                           folder=app.config["UPLOAD_FOLDER"])
+
+
+@app.route('/uploads/<name>')
+def uploads(name):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], name)
 
 
 @app.route('/explore')
@@ -68,7 +101,7 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data, telegram=form.telegram.data)
+        user = User(username=form.username.data, telegram=form.telegram.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -90,8 +123,11 @@ def login():
     if form.validate_on_submit():
         user = db.session.scalar(
             sa.select(User).where(User.username == form.username.data))
-        if user is None or not user.check_password(form.password.data):
-            flash('Некорректное имя или пароль')
+        if not user:
+            flash('Пройдите регистрацию')
+            return redirect(url_for('login'))
+        if not user.check_password(form.password.data):
+            flash('Не верное имя или пароль')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')

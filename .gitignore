@@ -38,7 +38,6 @@ nosetests.xml
 .venv
 .env
 venv
-app.db
 travel_diary.log*
 .idea
 .log

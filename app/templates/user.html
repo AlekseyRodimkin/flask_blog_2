@@ -3,7 +3,9 @@
 {% block content %}
 <table>
     <tr valign="top">
-        <td><img src="{{ user.avatar(128) }}"></td>
+        <td><a href="https://docs.gravatar.com/" target="_blank">
+                <img src="{{ user.avatar(128) }}" alt="mdo" width="128" height="128" class="rounded-circle">
+        </a></td>
         <td>
             <h1>{{ user.username }}</h1>
             {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
@@ -15,7 +17,7 @@
             <div class="btn-group" role="group" aria-label="Basic outlined example">
                 <button type="button" class="btn btn-outline-secondary btn-sm" disabled>Telegram</button>
                 <a class="btn btn-outline-primary btn-sm" href='https://t.me/{{ user.telegram }}'>{{ user.telegram
-                    }}⤴︎</a>
+                    }}︎</a>
             </div>
             {%
             endif %}

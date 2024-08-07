@@ -160,12 +160,16 @@ def load_user(id):
 class Post(db.Model):
     """Post model"""
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    body: so.Mapped[str] = so.mapped_column(sa.String(140))
+    head: so.Mapped[str] = so.mapped_column(sa.String(100))
+    body: so.Mapped[str] = so.mapped_column(sa.String(300))
     timestamp: so.Mapped[datetime] = so.mapped_column(
         index=True, default=lambda: datetime.now(timezone.utc))
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id),
                                                index=True)
-    video_path: so.Mapped[str] = so.mapped_column(sa.String(140))
+    price: so.Mapped[str] = so.mapped_column(sa.String(20))
+    places: so.Mapped[str] = so.mapped_column(sa.String(300))
+    photo_url: so.Mapped[str] = so.mapped_column(sa.String(100), default=None)
+    video_url: so.Mapped[str] = so.mapped_column(sa.String(100), default=None)
     author: so.Mapped[User] = so.relationship(back_populates='posts')
 
     def __repr__(self):

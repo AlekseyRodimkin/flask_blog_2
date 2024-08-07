@@ -6,6 +6,7 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, \
 import sqlalchemy as sa
 from app import db
 from app.models import User
+from flask_wtf.file import FileField, FileRequired
 
 
 class LoginForm(FlaskForm):
@@ -84,6 +85,14 @@ class EmptyForm(FlaskForm):
 
 class PostForm(FlaskForm):
     """Post form class"""
-    post = TextAreaField('Расскажите что-то', validators=[
-        DataRequired(), Length(min=1, max=140)])
+    title = TextAreaField('Место', validators=[
+        DataRequired(), Length(min=1, max=100)])
+    post = TextAreaField('Расскажите о поездке', validators=[
+        DataRequired(), Length(min=1, max=300)])
+    price = TextAreaField('Цена', validators=[
+        DataRequired(), Length(min=1, max=20)])
+    places = TextAreaField('Места для посещения', validators=[
+        DataRequired(), Length(min=1, max=300)])
+    file = FileField("Фото", validators=[FileRequired()])
+    video = FileField("Видео", validators=[FileRequired()])
     submit = SubmitField('Опубликовать')

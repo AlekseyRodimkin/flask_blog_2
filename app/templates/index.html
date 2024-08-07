@@ -2,13 +2,18 @@
 {% import "bootstrap_wtf.html" as wtf %}
 
 {% block content %}
-    <h1>Привет, {{ current_user.username }}!</h1>
-    {% if form %}
-    {{ wtf.quick_form(form) }}
-    {% endif %}
-    {% for post in posts %}
+<h3>Подписки</h3>
+<div class="container">
+    <div class="container" style="padding: 2px 20em;">
+        {% if form %}
+        {{ wtf.quick_form(form) }}
+        {% endif %}
+    </div>
+    <div class="container" style="padding: 2px 6em;">
+        {% for post in posts %}
         {% include '_post.html' %}
-    {% endfor %}
+        {% endfor %}
+    </div>
     <nav aria-label="Post navigation">
         <ul class="pagination">
             <li class="page-item{% if not prev_url %} disabled{% endif %}">
@@ -23,4 +28,5 @@
             </li>
         </ul>
     </nav>
+</div>
 {% endblock %}
