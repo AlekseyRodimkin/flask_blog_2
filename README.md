@@ -17,6 +17,6 @@ Gravatar - генерация аватара (https://docs.gravatar.com/)
 
 ![Вход](https://github.com/AlekseyRodimkin/travel_diary/raw/main/README/login.png)
 ![Профиль](https://github.com/AlekseyRodimkin/travel_diary/raw/main/README/profile.png)
+![Форма](https://github.com/AlekseyRodimkin/travel_diary/raw/main/README/form.png)
 ![Пост](https://github.com/AlekseyRodimkin/travel_diary/raw/main/README/post.png)
-![Пользователь](https://github.com/AlekseyRodimkin/travel_diary/raw/main/README/profile.png)
 ![Бот](https://github.com/AlekseyRodimkin/travel_diary/raw/main/README/bot.png)
