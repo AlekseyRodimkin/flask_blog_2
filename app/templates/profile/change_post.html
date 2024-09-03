@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% import "bootstrap_wtf.html" as wtf %}
+
+{% block content %}
+<div class="container">
+    <h2><a class="btn btn-outline-secondary btn-sm"
+           href="{{ url_for('profile.user', username=current_user.username) }}">Отмена</a></h2>
+    <h1>{{ title }}</h1>
+    <div class="col-md-4" id="form-change-post">
+        <form action="" method="post">
+            {% if form %}
+            <div id="form-change-post-2">
+                {{ wtf.quick_form(form) }}
+                <a href="{{ url_for('profile.user', username=current_user.username) }}">Отмена</a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

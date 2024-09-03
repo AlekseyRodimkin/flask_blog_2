@@ -1,5 +1,5 @@
-from dotenv import load_dotenv, find_dotenv
 import os
+from dotenv import load_dotenv, find_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -19,6 +19,6 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # The number of displayed items in the /index, /explore
-    POSTS_PER_PAGE = 3
+    POSTS_PER_PAGE = 25
 
     UPLOAD_FOLDER = os.path.join(basedir, 'uploads')

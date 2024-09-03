@@ -9,8 +9,10 @@ from telebot.handler_backends import State, StatesGroup
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlalchemy as sa
 from sqlalchemy.exc import IntegrityError
-from app import app, db
+from app import db, create_app
 from app.models import User
+
+app = create_app()
 
 logger.add('logs/bot.log', format="{time} {level}    {message}", level="INFO")
 logger.add('logs/bot.log', format="{time} {level}    {message}", level="ERROR")

@@ -42,3 +42,5 @@ travel_diary.log*
 .idea
 .log
 logs
+.db
+uploads/

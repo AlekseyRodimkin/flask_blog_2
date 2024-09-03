@@ -1,36 +1,82 @@
-<div style="border: 1px solid gray; border-radius: 10px; padding: 5px; margin: 10px">
-    <table>
-        <tr>
-            <th class="post-title" colspan="2">{{ post.head }}</th>
-        </tr>
-        <tr>
-            <td class="post-info" colspan="2">
-                <img src="{{ post.author.avatar(60) }}" class="rounded-circle"/>
-                <strong>
-                    <a href="{{ url_for('user', username=post.author.username) }}">
-                        {{ post.author.username }}
-                    </a>
-                </strong>{{ moment(post.timestamp).fromNow() }}
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                💵Стоимость поездки: <strong>{{ post.price }}</strong><br>
-                ☑️Места для посещения: <strong>{{ post.places }}</strong><br><br>
-                {{ post.body }}
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <img src="{{ post.photo_url }}" alt="Изображение поста" width="450px">
-            </td>
-            <td>
-                <video id="player" playsinline controls data-poster="/path/to/poster.jpg" width="450px">
-                    <source src="{{ post.video_url }}" type="video/mp4"/>
-                    <!-- Captions are optional -->
-                    <track kind="captions" label="English captions" src="/path/to/captions.vtt" srclang="en" default/>
-                </video>
-            </td>
-        </tr>
-    </table>
+<div id="post-main">
+    <div id="post-user">
+        <img id="post-user-avatar" src="{{ post.author.avatar(50) }}" class="rounded-circle"/>
+        <div>
+            <strong style="font-size: 16px;">
+                <a id="post-user-username" href="{{ url_for('profile.user', username=post.author.username) }}">
+                    {{ post.author.username }}
+                </a>
+            </strong>
+            <div is="post-timestamp">
+                {{ moment(post.timestamp).fromNow() }}
+            </div>
+        </div>
+    </div>
+
+    <div id="post-header">
+        <h2 id="post-header-head">{{ post.head }}</h2>
+        <div id="post-header-body">
+            💵 Стоимость поездки: <strong>{{ post.price }}</strong><br>
+            ☑️ Места для посещения: <strong>{{ post.places }}</strong>
+        </div>
+    </div>
+
+    <div id="post-body">
+        {{ post.body }}
+    </div>
+
+    {% if post.main_photo_url %}
+    <div class="post-block-file">
+        <img id="post-main-photo" src="{{ url_for('main.uploads', name=post.main_photo_url) }}"
+             alt="Основное изображение поста">
+    </div>
+    {% endif %}
+
+    {% if post.additional_photo_urls %}
+    <div class="post-block-file">
+        {% for photo in post.additional_photo_urls.split(',') %}
+        <img class="post-other-photo" src="{{ url_for('main.uploads', name=photo.strip()) }}"
+             alt="Дополнительное изображение поста">
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if post.main_video_url %}
+    <div class="post-block-file">
+        <video playsinline controls id="post-main-video">
+            <source src="{{ url_for('main.uploads', name=post.main_video_url) }}" type="video/mp4"/>
+            <track kind="captions" label="English captions" src="/path/to/captions.vtt" srclang="en" default/>
+        </video>
+    </div>
+    {% endif %}
+
+    {% if post.additional_video_urls %}
+    <div class="post-block-file">
+        {% for video in post.additional_video_urls.split(',') %}
+        <video playsinline controls class="post-other-video">
+            <source src="{{ url_for('main.uploads', name=post.additional_video_urls) }}" type="video/mp4"/>
+            <track kind="captions" label="English captions" src="/path/to/captions.vtt" srclang="en" default/>
+        </video>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if user == current_user %}
+    <div class="btn-group" role="group" aria-label="Actions">
+        <form action="{{ url_for('profile.change_post', username=current_user.username, post_id=post.id) }}"
+              method="post" style="display:inline;">
+            <div class="form-group mb-0">
+                {{ form.hidden_tag() }}
+                <button type="submit" class="btn btn-outline-primary btn-sm">Изменить</button>
+            </div>
+        </form>
+        <form action="{{ url_for('profile.delete_post', username=current_user.username, post_id=post.id) }}"
+              method="post">
+            <div class="form-group mb-0">
+                {{ form.hidden_tag() }}
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Удалить</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
 </div>

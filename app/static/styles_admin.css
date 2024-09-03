@@ -1,0 +1,33 @@
+table {
+    border-collapse: collapse;
+    margin: 0px;
+    padding: 0px;
+    border-radius: 20px;
+    font-size: 12px
+}
+th, td {
+    border: 1px solid #000;
+    max-width: 250px; /* Начальный фиксированный размер */
+    height: 20px; /* Начальный фиксированный размер */
+    position: relative; /* Для позиционирования ползунка */
+    overflow: hidden; /* либо auto */
+    white-space: nowrap; /* предотвращает перенос текста */
+}
+
+.cell-content {
+    overflow-y: auto; /* Прокрутка по вертикали */
+    height: 100%; /* Заполнение почти всей высоты ячейки */
+}
+.resizable {
+    position: relative;
+}
+
+.resizer {
+    width: 5px;
+    cursor: ew-resize;
+    background-color: #ccc;
+    position: absolute;
+    top: 0;
+    right: -2.5px; /* Положение разделителя */
+    height: 100%;
+}
